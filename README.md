@@ -33,27 +33,27 @@ Com a aplicação sendo executada corretamente em sua máquina, utilize um clien
 ### POST /auth/login - criar token de autenticação
 Para criar o token de autenticação, acesse o Postman e com o método POST, acesse a rota localhost:{porta}/api/auth/login. Na aba Headers, preencha o key value com ['Accept' = > 'application/json'] para receber todos os retornos estruturados com JSON.
 Logo após, na aba Body, selecione a opção raw JSON e cole as credenciais abaixo no textarea.
-{
+``{
     "email" : "mariaeduarda@gmail.com",
     "password" : "M4tr1x123"
-}
+}``
 O retorno será o token de autenticação. Para acessar as demais rotas protegidas basta acessar a aba Headers e preencher o key value com ['Autorization' => 'Bearer {token}'] ou acessar a aba Authorization, selecionar o type Bearer Token e colar o token no campo ao lado direito.
 
 Caso o token de autenticação não seja indicado nas rotas protegidas, a mensagem recebida será:
-{
+``{
     "message": "Unauthenticated."
-}
+}``
 
 ### Clientes
 #### GET /api/client - listagem de todos os clientes
 
 #### POST /api/client - criar um novo cliente
-{
+``{
     "name" : "Juliana Dias",
     "email" : "julianadias@gmail.com",
     "cpf" : "397.988.878-01",
     "phone" : "(42) 99737-2323"
-}
+}``
 
 #### GET /api/client/{client} - exibir apenas um cliente
 
@@ -65,12 +65,12 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 #### GET /api/dentist - listagem de todos os dentistas
 
 #### POST /api/dentist - criar um novo dentista
-{
+``{
     "name" : "Juliana Dias",
     "email" : "julianadias@gmail.com",
     "cpf" : "397.988.878-01",
     "phone" : "(42) 99737-2323"
-}
+}``
 
 #### GET /api/dentist/{dentist} - exibir apenas um dentista
 
@@ -82,12 +82,12 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 #### GET /api/appointment - listagem de todas as consultas
 
 #### POST /api/appointment - criar uma nova consultas
-{
+``{
     "appointment_date" : "2022-03-15 19:00:00",
     "appointment_reason" : "Extração dentária",
     "client_id" : 1,
     "dentist_id" : 1
-}
+}``
 
 #### GET /api/appointment/{appointment} - exibir apenas uma consulta
 
