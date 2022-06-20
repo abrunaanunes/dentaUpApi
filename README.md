@@ -1,64 +1,112 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# API Dental Up
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Atenção!
+Este projeto foi desenvolvido para fins de avaliação para a disciplina de Desenvolvimento Web Servidor
+ministrada pelo professor Diego Roberto Antunes na Universidade Tecnológica Federal do Paraná - Campi Ponta Grossa
 
-## About Laravel
+## Pré Requisitos
+- Instalar e configurar o ambiente com Xampp
+- Instalar Composer de forma global
+- Iniciar o Xampp junto iniciando o Apache e o MySQL;
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Instalação
+- Fazer o download do projeto no repositório
+- Executar o composer install na pasta do projeto
+- Criar um banco de dados
+- Duplicar o arquivo .env.example e criar o .env
+- Altera informações da configuração do banco e porta no arquivo .env localizado na raiz do diretório.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Sobre o sistema
+A API do sistema Dental Up proporciona a criação, atualização, exclusão e listagem dos dados dos clientes, dentistas, usuários (recepção) e das consultas. Para a utilização da API em seu ambiente de desenvolvimento, é necessário que você tenha configurado o banco de dados, de preferência o MySQL e, além disso, tenha um ambiente apache. 
+Para testes e afins, recomendamos que seja executado o comando ``php artisan migrate:fresh --seed`` para que as tabelas do banco sejam criadas e populados com dados mock.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O primeiro passo é duplicar o arquivo .env.example (o novo se chamará apenas .env) e configurá-lo com os dados do seu banco (nome, usuário e senha). Logo após, com o banco e o servidor apache iniciados, execute os seguintes comandos
+- php artisan key:generate
+- php artisan migrate:fresh --seed
+- php artisan serve
 
-## Learning Laravel
+Com a aplicação sendo executada corretamente em sua máquina, utilize um cliente HTTP para realizar os testes. Recomendamos o Postman.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Rotas
 
-## Laravel Sponsors
+### POST /auth/login - criar token de autenticação
+Para criar o token de autenticação, acesse o Postman e com o método POST, acesse a rota localhost:{porta}/api/auth/login. Na aba Headers, preencha o key value com ['Accept' = > 'application/json'] para receber todos os retornos estruturados com JSON.
+Logo após, na aba Body, selecione a opção raw JSON e cole as credenciais abaixo no textarea.
+{
+    "email" : "mariaeduarda@gmail.com",
+    "password" : "M4tr1x123"
+}
+O retorno será o token de autenticação. Para acessar as demais rotas protegidas basta acessar a aba Headers e preencher o key value com ['Autorization' => 'Bearer {token}'] ou acessar a aba Authorization, selecionar o type Bearer Token e colar o token no campo ao lado direito.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Caso o token de autenticação não seja indicado nas rotas protegidas, a mensagem recebida será:
+{
+    "message": "Unauthenticated."
+}
 
-### Premium Partners
+### Clientes
+#### GET /api/client - listagem de todos os clientes
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+#### POST /api/client - criar um novo cliente
+{
+    "name" : "Juliana Dias",
+    "email" : "julianadias@gmail.com",
+    "cpf" : "397.988.878-01",
+    "phone" : "(42) 99737-2323"
+}
 
-## Contributing
+#### GET /api/client/{client} - exibir apenas um cliente
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### PUT /api/client/{client} - atualizar dados de um cliente
 
-## Code of Conduct
+#### DELETE /api/client/{client} - deletar um cliente
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Dentistas
+#### GET /api/dentist - listagem de todos os dentistas
 
-## Security Vulnerabilities
+#### POST /api/dentist - criar um novo dentista
+{
+    "name" : "Juliana Dias",
+    "email" : "julianadias@gmail.com",
+    "cpf" : "397.988.878-01",
+    "phone" : "(42) 99737-2323"
+}
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### GET /api/dentist/{dentist} - exibir apenas um dentista
 
-## License
+#### PUT /api/dentist/{dentist} - atualizar dados de um dentista
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### DELETE /api/dentist/{dentist} - deletar um dentista
+
+### Consultas
+#### GET /api/appointment - listagem de todas as consultas
+
+#### POST /api/appointment - criar uma nova consultas
+{
+    "appointment_date" : "2022-03-15 19:00:00",
+    "appointment_reason" : "Extração dentária",
+    "client_id" : 1,
+    "dentist_id" : 1
+}
+
+#### GET /api/appointment/{appointment} - exibir apenas uma consulta
+
+#### PUT /api/appointment/{appointment} - atualizar dados de uma consulta
+
+#### DELETE /api/appointment/{appointment} - deletar uma consulta
+
+## Partes desenvolvidas por cada integrante
+
+#### Maria Eduarda Freitas (RA: 2317559)
+Responsável pelo desenvolvimento da documentação.
+
+#### Bruna Nunes (RA: 2328585) 
+Responsável pelo desenvolvimento da API.
+
+#### Leodocir Neto (RA: 2257122)
+Responsável pelos testes das requisições com o cliente HTTP Postman.
+
+## Tecnologias utilizadas no proejto
+- Laravel
+- Laravel Sanctum (autênticação)
+- Postman (cliente HTTP para testes)
