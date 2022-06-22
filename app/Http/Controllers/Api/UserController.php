@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $model = User::class;
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +16,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
-        return response()->json($user);
+        try {
+            $user = $this->model::all();
+            return response()->json($user);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -33,15 +40,32 @@ class UserController extends Controller
             'email' => 'required|email',
         ]);
 
-        $user = new User();
+        try {
+            $user = new $this->model();
 
-        $user->name = $request->get('name');
-        $user->name = $request->get('password');
-        $user->name = $request->get('email');
+            $user->name = $request->get('name');
+            $user->name = $request->get('password');
+            $user->name = $request->get('email');
 
-        $user->save();
+            $user->save();
 
-        return response()->json($user);
+            $credentials = request()->only('email', 'password');
+
+            if(!auth()->attempt($credentials)) abort(401, 'Credenciais inválidas');
+
+            $token = auth()->user()->createToken('auth_token');
+
+            return response()->json([
+                'data' => [
+                    'token' => $token->plainTextToken
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -52,8 +76,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
-        return response()->json($user);
+        try {
+            $user = $this->model::findOrFail($id);
+            return response()->json($user);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -65,21 +95,27 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-        
         $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
             'email' => 'required|email',
         ]);
 
-        $user->name = $request->get('name');
-        $user->name = $request->get('password');
-        $user->name = $request->get('email');
+        try {
+            $user = $this->model::findOrFail($id);
 
-        $user->save();
+            $user->name = $request->get('name');
+            $user->name = $request->get('password');
+            $user->name = $request->get('email');
 
-        return response()->json($user);
+            $user->save();
+
+            return response()->json($user);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -90,9 +126,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = $this->model::findOrFail($id);
+            $user->delete();
 
-        return response()->json($user::all());
+            return response()->json($user::all());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }

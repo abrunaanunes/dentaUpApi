@@ -15,17 +15,13 @@ ministrada pelo professor Diego Roberto Antunes na Universidade Tecnológica Fed
 - Criar um banco de dados
 - Duplicar o arquivo .env.example e criar o .env
 - Altera informações da configuração do banco e porta no arquivo .env localizado na raiz do diretório.
+- Executar ``php artisan key:generate``
+- Excutar ``php artisan migrate:fresh --seed``
+- Executar ``php artisan serve``
 
 ## Sobre o sistema
 A API do sistema Dental Up proporciona a criação, atualização, exclusão e listagem dos dados dos clientes, dentistas, usuários (recepção) e das consultas. Para a utilização da API em seu ambiente de desenvolvimento, é necessário que você tenha configurado o banco de dados, de preferência o MySQL e, além disso, tenha um ambiente apache. 
-Para testes e afins, recomendamos que seja executado o comando ``php artisan migrate:fresh --seed`` para que as tabelas do banco sejam criadas e populados com dados mock.
-
-O primeiro passo é duplicar o arquivo .env.example (o novo se chamará apenas .env) e configurá-lo com os dados do seu banco (nome, usuário e senha). Logo após, com o banco e o servidor apache iniciados, execute os seguintes comandos
-- php artisan key:generate
-- php artisan migrate:fresh --seed
-- php artisan serve
-
-Com a aplicação sendo executada corretamente em sua máquina, utilize um cliente HTTP para realizar os testes. Recomendamos o Postman.
+Para testes e afins, recomendamos que utilizem um cliente HTTP, de preferência o Postman.
 
 
 ## Rotas
@@ -39,6 +35,7 @@ Logo após, na aba Body, selecione a opção raw JSON e cole as credenciais abai
 }``
 O retorno será o token de autenticação. Para acessar as demais rotas protegidas basta acessar a aba Headers e preencher o key value com ['Autorization' => 'Bearer {token}'] ou acessar a aba Authorization, selecionar o type Bearer Token e colar o token no campo ao lado direito.
 
+### Observação
 Caso o token de autenticação não seja indicado nas rotas protegidas, a mensagem recebida será:
 ``{
     "message": "Unauthenticated."
@@ -46,8 +43,10 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 
 ### Clientes
 #### GET /api/client - listagem de todos os clientes
+Acesse a rota localhost:{porta}/api/client com o método GET e faça a autenticação com o token retornado no login ou registro. O retorno será um array com os objetos existentes nessa classe.
 
 #### POST /api/client - criar um novo cliente
+Acesse a rota localhost:{porta}/api/client com o método POST, com a autenticação feita, cole o JSON abaixo no body da requisição. O retorno será o objeto criado.
 ``{
     "name" : "Juliana Dias",
     "email" : "julianadias@gmail.com",
@@ -56,15 +55,26 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 }``
 
 #### GET /api/client/{client} - exibir apenas um cliente
+Acesse a rota localhost:{porta}/api/client/{client} com o método GET, com a autenticação feita. O retorno será o objeto que possui o id indicado na url ({client}).
 
 #### PUT /api/client/{client} - atualizar dados de um cliente
+Acesse a rota localhost:{porta}/api/client/{client} com o método PUT, com a autenticação feita, cole o JSON abaixo no body da requisição e indique as alterações que deseja fazer. O retorno será o objeto que possui o id indicado na url ({client}) após a alteração.
+``{
+    "name" : "Juliana Dias",
+    "email" : "julianadias@gmail.com",
+    "cpf" : "397.988.878-01",
+    "phone" : "(42) 99737-2323"
+}``
 
 #### DELETE /api/client/{client} - deletar um cliente
+Acesse a rota localhost:{porta}/api/client/{client} com o método DELERE, com a autenticação feita. O retorno será um array dos objetos que ainda existem nessa classe após a exclusão do objeto que possuo o id indicado na url ({client}).
 
 ### Dentistas
 #### GET /api/dentist - listagem de todos os dentistas
+Acesse a rota localhost:{porta}/api/dentist com o método GET e faça a autenticação com o token retornado no login ou registro. O retorno será um array com os objetos existentes nessa classe.
 
 #### POST /api/dentist - criar um novo dentista
+Acesse a rota localhost:{porta}/api/dentist com o método POST, com a autenticação feita, cole o JSON abaixo no body da requisição. O retorno será o objeto criado.
 ``{
     "name" : "Juliana Dias",
     "email" : "julianadias@gmail.com",
@@ -73,15 +83,26 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 }``
 
 #### GET /api/dentist/{dentist} - exibir apenas um dentista
+Acesse a rota localhost:{porta}/api/dentist/{dentista} com o método GET, com a autenticação feita. O retorno será o objeto que possui o id indicado na url ({dentista}).
 
 #### PUT /api/dentist/{dentist} - atualizar dados de um dentista
+Acesse a rota localhost:{porta}/api/dentist/{dentist} com o método PUT, com a autenticação feita, cole o JSON abaixo no body da requisição e indique as alterações que deseja fazer. O retorno será o objeto que possui o id indicado na url ({dentist}) após a alteração.
+``{
+    "name" : "Juliana Dias",
+    "email" : "julianadias@gmail.com",
+    "cpf" : "397.988.878-01",
+    "phone" : "(42) 99737-2323"
+}``
 
 #### DELETE /api/dentist/{dentist} - deletar um dentista
+Acesse a rota localhost:{porta}/api/dentist/{dentist} com o método DELERE, com a autenticação feita. O retorno será um array dos objetos que ainda existem nessa classe após a exclusão do objeto que possuo o id indicado na url ({dentist}).
 
 ### Consultas
 #### GET /api/appointment - listagem de todas as consultas
+Acesse a rota localhost:{porta}/api/appointment com o método GET e faça a autenticação com o token retornado no login ou registro. O retorno será um array com os objetos existentes nessa classe.
 
 #### POST /api/appointment - criar uma nova consultas
+Acesse a rota localhost:{porta}/api/appointment com o método POST, com a autenticação feita, cole o JSON abaixo no body da requisição. O retorno será o objeto criado.
 ``{
     "appointment_date" : "2022-03-15 19:00:00",
     "appointment_reason" : "Extração dentária",
@@ -90,10 +111,19 @@ Caso o token de autenticação não seja indicado nas rotas protegidas, a mensag
 }``
 
 #### GET /api/appointment/{appointment} - exibir apenas uma consulta
+Acesse a rota localhost:{porta}/api/appointment/{appointment} com o método GET, com a autenticação feita. O retorno será o objeto que possui o id indicado na url ({appointment}).
 
 #### PUT /api/appointment/{appointment} - atualizar dados de uma consulta
+Acesse a rota localhost:{porta}/api/appointment/{appointment} com o método PUT, com a autenticação feita, cole o JSON abaixo no body da requisição e indique as alterações que deseja fazer. O retorno será o objeto que possui o id indicado na url ({appointment}) após a alteração.
+``{
+    "appointment_date" : "2022-03-15 19:00:00",
+    "appointment_reason" : "Extração dentária",
+    "client_id" : 1,
+    "dentist_id" : 1
+}``
 
 #### DELETE /api/appointment/{appointment} - deletar uma consulta
+Acesse a rota localhost:{porta}/api/appointment/{appointment} com o método DELERE, com a autenticação feita. O retorno será um array dos objetos que ainda existem nessa classe após a exclusão do objeto que possuo o id indicado na url ({appointment}).
 
 ## Partes desenvolvidas por cada integrante
 

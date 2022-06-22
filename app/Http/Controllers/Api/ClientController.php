@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    protected $model = Client::class;
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +16,14 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::all();
-        return response()->json($clients);
+        try {
+            $clients = $this->model::all();
+            return response()->json($clients);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -34,16 +41,22 @@ class ClientController extends Controller
             'phone' => 'required|string',
         ]);
 
-        $client = new Client();
-
-        $client->name = $request->get('name');
-        $client->email = $request->get('email');
-        $client->cpf = $request->get('cpf');
-        $client->phone = $request->get('phone');
-
-        $client->save();
-
-        return response()->json($client);
+        try {
+            $client = new $this->model();
+    
+            $client->name = $request->get('name');
+            $client->email = $request->get('email');
+            $client->cpf = $request->get('cpf');
+            $client->phone = $request->get('phone');
+    
+            $client->save();
+    
+            return response()->json($client);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -54,8 +67,14 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $client = Client::findOrFail($id);
-        return response()->json($client);
+        try {
+            $client = $this->model::findOrFail($id);
+            return response()->json($client);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -67,23 +86,29 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $client = Client::findOrFail($id);
-
         $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email',
             'cpf' => 'required|string',
             'phone' => 'required|string',
         ]);
-
-        $client->name = $request->get('name');
-        $client->email = $request->get('email');
-        $client->cpf = $request->get('cpf');
-        $client->phone = $request->get('phone');
-
-        $client->save();
-
-        return response()->json($client);
+        
+        try {
+            $client = Client::findOrFail($id);
+            
+            $client->name = $request->get('name');
+            $client->email = $request->get('email');
+            $client->cpf = $request->get('cpf');
+            $client->phone = $request->get('phone');
+    
+            $client->save();
+    
+            return response()->json($client);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -94,9 +119,15 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $client = Client::findOrFail($id);
-        $client->delete();
-
-        return response()->json($client::all());
+        try {
+            $client = $this->model::findOrFail($id);
+            $client->delete();
+    
+            return response()->json($client::all());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }

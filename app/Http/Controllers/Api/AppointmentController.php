@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
 {
+    protected $model = Appointment::class;
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +16,14 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::all();
-        return response()->json($appointments);
+        try {
+            $appointments = $this->model::all();
+            return response()->json($appointments);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -34,18 +41,24 @@ class AppointmentController extends Controller
             'dentist_id' => 'required|integer|exists:dentist.id',
         ]);
 
-        $appointment = new Appointment();
-
-        $appointment->appointment_date = $request->get('appointment_date');
-        $appointment->appointment_reason = $request->get('appointment_reason');
-        $appointment->client_id = $request->get('client_id');
-        $appointment->dentist_id = $request->get('dentist_id');
-
-        $appointment->save();
-
-        return response()->json($appointment);
+        try {
+            $appointment = new $this->model();
+            
+            $appointment->appointment_date = $request->get('appointment_date');
+            $appointment->appointment_reason = $request->get('appointment_reason');
+            $appointment->client_id = $request->get('client_id');
+            $appointment->dentist_id = $request->get('dentist_id');
+            
+            $appointment->save();
+            
+            return response()->json($appointment);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
-
+    
     /**
      * Display the specified resource.
      *
@@ -54,8 +67,14 @@ class AppointmentController extends Controller
      */
     public function show($id)
     {
-        $appointment = Appointment::findOrFail($id);
-        return response()->json($appointment);
+        try {
+            $appointment = $this->model::findOrFail($id);
+            return response()->json($appointment);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -67,23 +86,28 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $appointment = Appointment::findOrFail($id);
-
         $request->validate([
             'appointment_date' => 'required|datetime',
             'appointment_reason' => 'required|string',
             'client_id' => 'required|integer|exists:client.id',
             'dentist_id' => 'required|integer|exists:dentist.id',
         ]);
-
-        $appointment->appointment_date = $request->get('appointment_date');
-        $appointment->appointment_reason = $request->get('appointment_reason');
-        $appointment->client_id = $request->get('client_id');
-        $appointment->dentist_id = $request->get('dentist_id');
-
-        $appointment->save();
-
-        return response()->json($appointment);
+        
+        try {
+            $appointment = $this->model::findOrFail($id);
+            $appointment->appointment_date = $request->get('appointment_date');
+            $appointment->appointment_reason = $request->get('appointment_reason');
+            $appointment->client_id = $request->get('client_id');
+            $appointment->dentist_id = $request->get('dentist_id');
+    
+            $appointment->save();
+    
+            return response()->json($appointment);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -94,9 +118,15 @@ class AppointmentController extends Controller
      */
     public function destroy($id)
     {
-        $appointment = Appointment::findOrFail($id);
-        $appointment->delete();
-
-        return response()->json($appointment::all());
+        try {
+            $appointment = $this->model::findOrFail($id);
+            $appointment->delete();
+    
+            return response()->json($appointment::all());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
