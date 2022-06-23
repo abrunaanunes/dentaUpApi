@@ -27,7 +27,8 @@ Route::prefix('auth')->group(function () {
 
 
 Route::group([
-    'middleware' => 'auth:sanctum'
+    'middleware' => 'auth:sanctum',
+    'prefix' => 'protected'
 ], function() {
     Route::apiResource('client', ClientController::class);
     Route::apiResource('dentist', DentistController::class);

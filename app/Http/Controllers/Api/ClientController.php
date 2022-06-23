@@ -17,11 +17,17 @@ class ClientController extends Controller
     public function index()
     {
         try {
-            $clients = $this->model::all();
-            return response()->json($clients);
+            $client = $this->model::all();
+            return response()->json([
+                'status' => 200,
+                'data' => $client,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -51,10 +57,16 @@ class ClientController extends Controller
     
             $client->save();
     
-            return response()->json($client);
+            return response()->json([
+                'status' => 200,
+                'data' => $client,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -69,10 +81,16 @@ class ClientController extends Controller
     {
         try {
             $client = $this->model::findOrFail($id);
-            return response()->json($client);
+            return response()->json([
+                'status' => 200,
+                'data' => $client,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -103,10 +121,16 @@ class ClientController extends Controller
     
             $client->save();
     
-            return response()->json($client);
+            return response()->json([
+                'status' => 200,
+                'data' => $client,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -122,11 +146,18 @@ class ClientController extends Controller
         try {
             $client = $this->model::findOrFail($id);
             $client->delete();
+            $clients =  $this->model::all();
     
-            return response()->json($client::all());
+            return response()->json([
+                'status' => 200,
+                'data' => $clients,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }

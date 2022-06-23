@@ -13,10 +13,6 @@ class Appointment extends Model
         'id'
     ];
 
-    protected $casts = [
-        'appointment_date' => 'datetime',
-    ];
-
     public function client()
     {
         return $this->belongsTo(Client::class);

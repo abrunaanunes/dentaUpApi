@@ -17,11 +17,17 @@ class AppointmentController extends Controller
     public function index()
     {
         try {
-            $appointments = $this->model::all();
-            return response()->json($appointments);
+            $appointment = $this->model::with(['client', 'dentist'])->get();
+            return response()->json([
+                'status' => 200,
+                'data' => $appointment,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -35,10 +41,10 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'appointment_date' => 'required|datetime',
+            'appointment_date' => 'required|string',
             'appointment_reason' => 'required|string',
-            'client_id' => 'required|integer|exists:client.id',
-            'dentist_id' => 'required|integer|exists:dentist.id',
+            'client_id' => 'required|integer',
+            'dentist_id' => 'required|integer',
         ]);
 
         try {
@@ -48,13 +54,20 @@ class AppointmentController extends Controller
             $appointment->appointment_reason = $request->get('appointment_reason');
             $appointment->client_id = $request->get('client_id');
             $appointment->dentist_id = $request->get('dentist_id');
+            $appointment->user_id = auth()->id();
             
             $appointment->save();
             
-            return response()->json($appointment);
+            return response()->json([
+                'status' => 200,
+                'data' => $appointment,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -68,11 +81,17 @@ class AppointmentController extends Controller
     public function show($id)
     {
         try {
-            $appointment = $this->model::findOrFail($id);
-            return response()->json($appointment);
+            $appointment = $this->model::with(['client', 'dentist'])->findOrFail($id);
+            return response()->json([
+                'status' => 200,
+                'data' => $appointment,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -87,10 +106,10 @@ class AppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'appointment_date' => 'required|datetime',
+            'appointment_date' => 'required|string',
             'appointment_reason' => 'required|string',
-            'client_id' => 'required|integer|exists:client.id',
-            'dentist_id' => 'required|integer|exists:dentist.id',
+            'client_id' => 'required|integer',
+            'dentist_id' => 'required|integer',
         ]);
         
         try {
@@ -99,13 +118,20 @@ class AppointmentController extends Controller
             $appointment->appointment_reason = $request->get('appointment_reason');
             $appointment->client_id = $request->get('client_id');
             $appointment->dentist_id = $request->get('dentist_id');
+            $appointment->user_id = auth()->id();
     
             $appointment->save();
     
-            return response()->json($appointment);
+            return response()->json([
+                'status' => 200,
+                'data' => $appointment,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -121,11 +147,19 @@ class AppointmentController extends Controller
         try {
             $appointment = $this->model::findOrFail($id);
             $appointment->delete();
+
+            $appointments = $this->model::all();
     
-            return response()->json($appointment::all());
+            return response()->json([
+                'status' => 200,
+                'data' => $appointments,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }

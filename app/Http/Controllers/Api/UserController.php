@@ -18,10 +18,16 @@ class UserController extends Controller
     {
         try {
             $user = $this->model::all();
-            return response()->json($user);
+            return response()->json([
+                'status' => 200,
+                'data' => $user,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -44,8 +50,8 @@ class UserController extends Controller
             $user = new $this->model();
 
             $user->name = $request->get('name');
-            $user->name = $request->get('password');
-            $user->name = $request->get('email');
+            $user->password = bcrypt($request->get('password'));
+            $user->email = $request->get('email');
 
             $user->save();
 
@@ -56,13 +62,17 @@ class UserController extends Controller
             $token = auth()->user()->createToken('auth_token');
 
             return response()->json([
+                'status' => 200,
                 'data' => [
                     'token' => $token->plainTextToken
-                ]
+                ],
+                'error' => 'false'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
 
@@ -78,10 +88,16 @@ class UserController extends Controller
     {
         try {
             $user = $this->model::findOrFail($id);
-            return response()->json($user);
+            return response()->json([
+                'status' => 200,
+                'data' => $user,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -105,15 +121,21 @@ class UserController extends Controller
             $user = $this->model::findOrFail($id);
 
             $user->name = $request->get('name');
-            $user->name = $request->get('password');
-            $user->name = $request->get('email');
+            $user->password = bcrypt($request->get('password'));
+            $user->email = $request->get('email');
 
             $user->save();
 
-            return response()->json($user);
+            return response()->json([
+                'status' => 200,
+                'data' => $user,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -129,11 +151,18 @@ class UserController extends Controller
         try {
             $user = $this->model::findOrFail($id);
             $user->delete();
+            $users = $this->model::all();
 
-            return response()->json($user::all());
+            return response()->json([
+                'status' => 200,
+                'data' => $users,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }

@@ -17,11 +17,17 @@ class DentistController extends Controller
     public function index()
     {
         try {
-            $dentists = $this->model::all();
-            return response()->json($dentists);
+            $dentist = $this->model::all();
+            return response()->json([
+                'status' => 200,
+                'data' => $dentist,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -51,10 +57,16 @@ class DentistController extends Controller
     
             $dentist->save();
     
-            return response()->json($dentist);
+            return response()->json([
+                'status' => 200,
+                'data' => $dentist,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -69,10 +81,16 @@ class DentistController extends Controller
     {
         try {
             $dentist = $this->model::findOrFail($id);
-            return response()->json($dentist);
+            return response()->json([
+                'status' => 200,
+                'data' => $dentist,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -103,10 +121,16 @@ class DentistController extends Controller
     
             $dentist->save();
     
-            return response()->json($dentist);
+            return response()->json([
+                'status' => 200,
+                'data' => $dentist,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
@@ -122,11 +146,19 @@ class DentistController extends Controller
         try {
             $dentist = $this->model::findOrFail($id);
             $dentist->delete();
+
+            $dentists = $this->model::all();
     
-            return response()->json($dentist::all());
+            return response()->json([
+                'status' => 200,
+                'data' => $dentists,
+                'error' => 'false'
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => $th->getMessage()
+                'status' => 404,
+                'data' => [],
+                'error' => $th->getMessage()
             ]);
         }
     }
